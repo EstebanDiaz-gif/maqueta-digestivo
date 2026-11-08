@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Maqueta digital: el aparato digestivo</title>
+<meta name="theme-color" content="#E63946">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2B2D42;--bg:#FFF8EE;--line:#eedfc8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Baloo 2',system-ui,sans-serif;font-size:16.5px;line-height:1.32}
+button{font:inherit;cursor:pointer}
+.top{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff;border-bottom:2px solid var(--line);position:sticky;top:0;z-index:10}
+.top h1{font-size:17px;margin:0;flex:1;line-height:1.1}
+.badge{font-size:12.5px;font-weight:800;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.b-live{background:#E63946;color:#fff;animation:blink 1.6s infinite}
+.b-free{background:#e9ecef;color:#555}
+.b-pres{background:#2A9D8F;color:#fff}
+@keyframes blink{50%{opacity:.6}}
+.tabs{display:flex;gap:6px;padding:8px 12px 0}
+.tabs button{flex:1;border:0;border-radius:12px 12px 0 0;padding:8px;font-weight:800;background:#efe3d0;color:#7a6a55}
+.tabs button.on{background:#fff;color:var(--ink)}
+.view{display:none}.view.on{display:block}
+.who{display:flex;align-items:center;gap:10px;padding:10px 12px 6px}
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;font-weight:800;flex:0 0 auto}
+.who small{display:block;color:#8D99AE;font-weight:700;font-size:12.5px;line-height:1}
+.who b{display:block;font-size:17px;line-height:1.15}
+.stage{position:relative;margin:0 12px;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#ffffff,#f3e6d2);box-shadow:0 3px 0 var(--line)}
+canvas{display:block;width:100%;height:46vh;min-height:300px;touch-action:none}
+.hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:#8D99AE;font-weight:700;pointer-events:none}
+.sbtn{position:absolute;border:0;border-radius:12px;padding:6px 10px;font-size:13px;font-weight:800;background:#fffd;box-shadow:0 2px 0 #0001}
+.sbtn.on{background:#FFD166}
+#btnAll{right:8px;bottom:8px}
+#btnPoint{right:8px;top:8px}
+#liveMsg{position:absolute;left:8px;top:8px;font-size:12.5px;font-weight:800;background:#fffd;border-radius:10px;padding:4px 8px;display:none}
+.card{background:#fff;margin:12px;border-radius:18px;padding:14px 15px;box-shadow:0 3px 0 var(--line);border-top:6px solid #ccc}
+.card h2{margin:0 0 4px;font-size:21px;line-height:1.15}
+.card p{margin:6px 0}
+.stepn{font-size:12.5px;color:#8D99AE;font-weight:800}
+.ctrl{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 12px 10px}
+.btn{border:0;border-radius:14px;padding:11px 16px;font-weight:800;font-size:16px;color:#fff;background:#2A9D8F;box-shadow:0 4px 0 #1d6f65}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1d6f65}
+.btn.gray{background:#8D99AE;box-shadow:0 4px 0 #6b768a}
+.btn:disabled{opacity:.35}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;flex:1}
+.dots i{width:9px;height:9px;border-radius:50%;background:#e2d3bb}
+.dots i.on{background:var(--ink)}
+.parts{display:flex;gap:6px;overflow-x:auto;padding:0 12px 12px}
+.parts button{flex:0 0 auto;border:3px solid transparent;border-radius:14px;padding:6px 10px;font-weight:800;font-size:14px;color:#fff;opacity:.6}
+.parts button.on{opacity:1;border-color:var(--ink)}
+.followbar{margin:0 12px 12px;display:flex;gap:8px}
+.followbar button{flex:1;border:2px dashed #cbb99c;background:transparent;border-radius:12px;padding:8px;font-weight:800;color:#7a6a55}
+.panel{margin-top:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border-radius:14px;padding:10px;color:#fff;font-weight:700;line-height:1.2}
+.tile .e{font-size:28px;display:block}
+.tile b{display:block;font-size:16px}
+.chain{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;font-weight:800;text-align:center}
+.chain span{background:#F1EAFE;border-radius:12px;padding:8px 10px;font-size:14px}
+.chain .e{font-size:26px;display:block}
+.chain i{font-style:normal;font-size:20px;color:#8D99AE}
+.know{background:#EAF4FF;border-radius:12px;padding:8px 11px;margin-top:8px;font-size:15px}
+svg.anim{width:100%;height:auto;display:block;background:#FFF7EA;border-radius:14px}
+.olist{display:grid;gap:6px}
+.olist div{display:flex;gap:8px;align-items:center;background:#f8f9fb;border-radius:10px;padding:6px 9px}
+.olist i{width:14px;height:14px;border-radius:50%;flex:0 0 auto}
+/* quiz */
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{position:relative;overflow:hidden;border:3px solid #eadbc4;background:#fff;border-radius:14px;padding:11px 12px;font-size:16.5px;text-align:left;color:var(--ink)}
+.opt .bar{position:absolute;left:0;top:0;bottom:0;background:#e9e2ff;z-index:0;transition:width .4s}
+.opt span{position:relative;z-index:1}
+.opt .cnt{float:right;font-weight:800}
+.opt.ok{border-color:#2A9D8F;background:#E3F6F2}
+.opt.bad{border-color:#E63946;background:#FDECEC}
+.opt.mine{border-color:#8338EC}
+.qmeta{display:flex;justify-content:space-between;font-weight:800;color:#8D99AE;font-size:13.5px}
+.fb{margin-top:8px;padding:9px 11px;border-radius:12px;font-size:15px}
+.big{font-size:40px;text-align:center}
+/* games */
+.orderbox{display:flex;flex-wrap:wrap;gap:6px;min-height:50px;padding:8px;border:3px dashed #e2d3bb;border-radius:14px;margin:8px 0}
+.chip{border:0;border-radius:12px;padding:9px 12px;font-weight:800;font-size:15px;background:#3A86FF;color:#fff}
+.chip.placed{background:#2A9D8F}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* svg anims */
+@keyframes chomp{0%,100%{transform:translateY(0)}50%{transform:translateY(26px)}}
+@keyframes crumb{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--dx),70px);opacity:0}}
+@keyframes drop{0%{transform:translateY(-40px);opacity:0}30%{opacity:1}100%{transform:translateY(45px);opacity:0}}
+@keyframes melt{0%{transform:scale(1);opacity:1}80%{transform:scale(.25);opacity:.2}100%{transform:scale(1);opacity:1}}
+@keyframes sugar{0%{transform:translate(0,0);opacity:0}30%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+@keyframes absorb{0%{transform:translate(0,0);opacity:0}10%{opacity:1}55%{transform:translate(0,var(--dy))}100%{transform:translate(var(--dx),var(--dy2));opacity:.9}}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>🫃 Maqueta del aparato digestivo</h1>
+  <span id="badge" class="badge b-free">Modo libre</span>
+</div>
+<div id="login" style="display:none;position:fixed;inset:0;z-index:50;background:#2B2D42ee;align-items:center;justify-content:center;padding:20px">
+  <form onsubmit="event.preventDefault();doLogin()" style="background:#fff;border-radius:20px;padding:20px;width:100%;max-width:340px;display:grid;gap:10px">
+    <h2 style="margin:0">🎤 Modo presentadora</h2>
+    <p style="margin:0;color:#555">Entrá con la cuenta de la presentación para manejar la maqueta en todos los celulares.</p>
+    <label>Mail<br><input id="lgEmail" type="email" autocomplete="username" style="width:100%;padding:10px;border-radius:10px;border:2px solid #ddd;font:inherit"></label>
+    <label>Clave<br><input id="lgPass" type="password" autocomplete="current-password" style="width:100%;padding:10px;border-radius:10px;border:2px solid #ddd;font:inherit"></label>
+    <button class="btn" type="submit">Entrar</button>
+    <button class="btn gray" type="button" onclick="location.hash='';location.reload()">Solo mirar</button>
+    <div id="lgErr" style="color:#E63946;font-weight:700"></div>
+  </form>
+</div>
+<div class="tabs"><button class="on" data-v="vMaq">🧪 Maqueta</button><button data-v="vJue">🎮 Juegos</button></div>
+
+<div id="vMaq" class="view on">
+  <div class="who" id="who"></div>
+  <div class="stage">
+    <canvas id="cv"></canvas>
+    <div id="liveMsg"></div>
+    <button class="sbtn" id="btnPoint">👆 Señalar</button>
+    <button class="sbtn" id="btnAll">🔄 Ver todo</button>
+    <button class="sbtn" id="btnOut" style="right:8px;top:48px;display:none" onclick="doLogout()">Salir</button>
+    <div class="hint" id="hint">Arrastrá para girar · tocá un órgano</div>
+  </div>
+  <div class="card" id="card"></div>
+  <div class="ctrl" id="ctrl">
+    <button class="btn gray" id="prev">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="btn" id="next">▶</button>
+  </div>
+  <div class="parts" id="parts"></div>
+  <div class="followbar" id="followbar"></div>
+</div>
+
+<div id="vJue" class="view">
+  <div class="card" style="border-top-color:#3A86FF">
+    <h2>🧩 Ordená el recorrido</h2>
+    <p>Tocá los órganos <b>en el orden</b> en que pasa la comida.</p>
+    <div class="orderbox" id="orderBox"></div>
+    <div id="chips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    <div class="fb" id="orderFb" style="display:none"></div>
+    <div style="text-align:center;margin-top:10px"><button class="btn gray" onclick="initOrder()">🔄 Otra vez</button></div>
+  </div>
+  <div class="card" style="border-top-color:#FB8500">
+    <h2>⚙️ ¿Mecánica o química?</h2>
+    <p>¿Qué tipo de digestión es?</p>
+    <div id="mq"></div>
+  </div>
+  <div class="card" style="border-top-color:#8338EC">
+    <h2>🤝 ¿Qué sistema ayuda?</h2>
+    <div id="sg"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+// ======================= CONFIGURACIÓN DE FIREBASE =======================
+// Pegá acá los datos de tu proyecto (Firebase > Configuración del proyecto > Tus apps > Web)
+const FIREBASE_CONFIG = {
+  apiKey: "PEGAR_API_KEY",
+  authDomain: "PEGAR.firebaseapp.com",
+  databaseURL: "https://PEGAR-default-rtdb.firebaseio.com",
+  projectId: "PEGAR",
+  appId: "PEGAR"
+};
+// =========================================================================
+// =====================================================================
+// CONTENIDO
+// =====================================================================
+const PRESENTERS=[
+ {n:'Portada',c:'#2B2D42',e:'🫃'},
+ {n:'Sofía',c:'#E63946',e:'🍎'},
+ {n:'Luz Martina',c:'#FB8500',e:'🍞'},
+ {n:'Camila',c:'#3A86FF',e:'🍕'},
+ {n:'Zahira',c:'#2A9D8F',e:'🍌'},
+ {n:'María',c:'#8338EC',e:'🥪'},
+ {n:'Desafío',c:'#E9A800',e:'🏆'}
+];
+// step: t,title; x,html; f,focus; hl,highlight list; food:{to,from}; pn,panel; sys,systems; lab,show labels for hl
+const PARTS=[
+ {title:'El aparato digestivo',steps:[
+  {t:'El aparato digestivo',x:'<p>Una exposición de <b>Sofía, Luz Martina, Camila, Zahira y María</b>.</p><p>Escaneá, mirá y seguí la maqueta en tu celu mientras ellas explican. 👀</p>',f:'all',pn:'portada'}
+ ]},
+ {title:'¿Qué sucede con los alimentos en nuestro cuerpo?',food:'🍎',steps:[
+  {t:'Comemos... ¡y empieza la digestión!',f:'all',food:{to:'boca'},x:'<p>Cuando comemos, los alimentos entran al cuerpo y empieza un proceso llamado <b>digestión</b>.</p><p>Los alimentos se van <b>descomponiendo</b> en sustancias más pequeñas llamadas <b>nutrientes</b>, que el cuerpo puede <b>absorber y aprovechar</b>.</p>'},
+  {t:'Primero: la boca',f:'boca',hl:['boca'],lab:1,food:{to:'boca'},x:'<p>Los alimentos se <b>mastican</b> en la boca y se <b>mezclan con la saliva</b>.</p>'},
+  {t:'Después: el recorrido',f:'all',hl:['esofago','estomago','delgado','grueso'],lab:1,food:{from:'boca',to:'delgado'},x:'<p>Después pasan por diferentes órganos, como el <b>esófago</b>, el <b>estómago</b> y los <b>intestinos</b>. 👀 ¡Mirá cómo viaja la manzana!</p>'},
+  {t:'¿Para qué sirven los nutrientes?',f:'delgado',hl:['delgado'],lab:1,food:{to:'delgado'},pn:'usos',x:'<p>Durante el recorrido, el cuerpo obtiene los nutrientes que necesita para:</p>'},
+  {t:'Lo que no sirve, se elimina',f:'abdomen',hl:['grueso','recto'],lab:1,food:{from:'delgado',to:'fin'},x:'<p>Finalmente, los <b>restos que no se aprovechan</b> se <b>eliminan</b> del organismo.</p>'},
+  {t:'Ejemplo: una manzana 🍎',f:'all',food:{from:'boca',to:'delgado'},pn:'manzana',x:'<p>Cuando comemos una manzana, nuestro cuerpo...</p>'}
+ ]},
+ {title:'¿Cómo se realiza la digestión y cuáles son los órganos principales?',food:'🍞',steps:[
+  {t:'¿Qué es la digestión?',f:'all',food:{to:'boca'},x:'<p>Es el proceso por el cual nuestro cuerpo <b>transforma los alimentos en sustancias más pequeñas</b>.</p><p>Existen <b>dos tipos</b>: la <b>mecánica</b> y la <b>química</b>.</p>'},
+  {t:'⚙️ Digestión mecánica',f:'boca',hl:['boca'],lab:1,food:{to:'boca'},pn:'mecanica',x:'<p>Consiste en <b>triturar y mezclar</b> los alimentos. Por ejemplo, cuando <b>masticamos</b>.</p>'},
+  {t:'🧪 Digestión química',f:'boca',hl:['boca'],lab:1,food:{to:'boca'},pn:'quimica',x:'<p>Consiste en <b>descomponer</b> los alimentos mediante <b>enzimas y jugos digestivos</b>. Por ejemplo, cuando la <b>saliva</b> comienza a descomponer el <b>pan</b>.</p>'},
+  {t:'Los órganos principales',f:'all',hl:['boca','esofago','estomago','delgado','grueso'],lab:1,pn:'organos',x:''},
+  {t:'Los ayudantes 🤝',f:'ayudantes',hl:['higado','vesicula','pancreas'],lab:1,pn:'ayudantes',x:'<p>También colaboran otros órganos, aunque la comida <b>no pasa por ellos</b>:</p>'}
+ ]},
+ {title:'¿Qué recorrido realizan los alimentos?',food:'🍕',steps:[
+  {t:'El viaje de la pizza 🍕',f:'all',food:{to:'boca'},x:'<p>Cuando comemos, los alimentos pasan por diferentes órganos del <b>aparato digestivo</b>, donde se descomponen para aprovechar sus <b>nutrientes</b>.</p>'},
+  {t:'1. La boca',f:'boca',hl:['boca'],lab:1,food:{to:'boca'},x:'<p>Los <b>dientes trituran</b> los alimentos y los mezclan con la <b>saliva</b>, formando el <b>bolo alimenticio</b>.</p>'},
+  {t:'2. La faringe',f:'faringe',hl:['faringe'],lab:1,food:{to:'faringe'},x:'<p>Permite el <b>paso</b> de los alimentos <b>hacia el esófago</b>. Está en la garganta.</p>'},
+  {t:'3. El esófago',f:'esofago',hl:['esofago'],lab:1,food:{from:'faringe',to:'esofago'},x:'<p><b>Transporta</b> los alimentos <b>hasta el estómago</b>. Es un tubo con músculos que empujan la comida.</p>'},
+  {t:'4. El estómago',f:'estomago',hl:['estomago'],lab:1,food:{from:'esofago',to:'estomago'},x:'<p><b>Mezcla</b> los alimentos con los <b>jugos gástricos</b> y forma una mezcla llamada <b>quimo</b>.</p>'},
+  {t:'5. El intestino delgado',f:'delgado',hl:['delgado'],lab:1,food:{from:'estomago',to:'delgado'},x:'<p><b>Termina la digestión</b> y <b>absorbe los nutrientes</b>.</p>'},
+  {t:'6. El intestino grueso',f:'grueso',hl:['grueso'],lab:1,food:{from:'delgado',to:'grueso'},x:'<p><b>Absorbe el agua</b> y forma las <b>heces</b>.</p>'},
+  {t:'7. El recto y el ano',f:'recto',hl:['recto'],lab:1,food:{from:'grueso',to:'fin'},x:'<p><b>Almacenan y eliminan</b> los desechos del cuerpo.</p>'},
+  {t:'Ejemplo: una pizza 🍕',f:'all',hl:['boca','faringe','esofago','estomago','delgado','grueso','recto'],food:{from:'boca',to:'fin',slow:1},x:'<p>Cuando comemos una pizza, nuestro cuerpo la <b>descompone</b> para <b>aprovechar sus nutrientes</b> y <b>eliminar</b> lo que no necesita.</p>'}
+ ]},
+ {title:'¿Cómo se absorben los nutrientes en el intestino delgado?',food:'🍌',steps:[
+  {t:'¿Qué es la absorción?',f:'delgado',hl:['delgado'],lab:1,food:{to:'delgado'},x:'<p>Es el proceso mediante el cual los <b>nutrientes pasan desde el intestino hacia nuestro organismo</b>.</p><p>Ocurre principalmente en el <b>intestino delgado</b>.</p>'},
+  {t:'🔬 Las vellosidades intestinales',f:'delgado',hl:['delgado'],food:{to:'delgado'},pn:'villi',x:'<p>El intestino delgado tiene unas <b>pequeñas estructuras</b> llamadas <b>vellosidades intestinales</b>. Permiten que los nutrientes <b>atraviesen las paredes</b> del intestino y <b>pasen a la sangre</b>.</p>'},
+  {t:'Cada nutriente, una función',f:'delgado',hl:['delgado'],pn:'nutr4',x:''},
+  {t:'¡A la sangre! 🩸',f:'all',hl:['delgado'],sys:['circ'],food:{to:'delgado'},x:'<p>Después de ser absorbidos, muchos nutrientes <b>pasan a la sangre</b> y llegan a las <b>distintas partes del organismo</b>.</p>'},
+  {t:'Ejemplo: una banana 🍌',f:'delgado',hl:['delgado'],food:{from:'boca',to:'delgado'},pn:'villiBanana',x:'<p>Cuando comemos una banana, sus nutrientes se <b>absorben en el intestino</b> y algunos <b>pasan a la sangre</b> para ser utilizados por el cuerpo.</p>'}
+ ]},
+ {title:'¿Cómo trabaja el sistema digestivo junto con otros sistemas?',food:'🥪',steps:[
+  {t:'¡No trabaja solo!',f:'all',sys:['circ','nerv','linf'],x:'<p>El sistema digestivo <b>no trabaja solo</b>: necesita la <b>ayuda de otros sistemas</b> del cuerpo.</p>'},
+  {t:'❤️ Sistema circulatorio',f:'all',sys:['circ'],hl:['delgado'],x:'<p><b>Transporta los nutrientes</b> por la <b>sangre</b> hacia <b>todo el cuerpo</b>.</p>'},
+  {t:'🧠 Sistema nervioso',f:'all',sys:['nerv'],hl:['estomago','delgado'],x:'<p><b>Controla y coordina</b> diferentes funciones digestivas. El cerebro "avisa" cuando tenemos hambre o estamos llenos.</p>'},
+  {t:'💪 Sistema muscular',f:'all',sys:['musc'],hl:['esofago','estomago','delgado','grueso'],food:{from:'esofago',to:'grueso',slow:1},x:'<p><b>Ayuda a mover los alimentos</b> por los órganos digestivos. ¡Mirá las ondas que empujan la comida!</p>'},
+  {t:'🛡️ Sistema linfático',f:'abdomen',sys:['linf'],hl:['delgado'],x:'<p>Participa en las <b>defensas</b> del cuerpo y <b>transporta gran parte de las grasas</b> absorbidas en el intestino.</p>'},
+  {t:'¡Todos juntos! 🤝',f:'all',sys:['circ','nerv','linf'],food:{from:'boca',to:'delgado'},pn:'cadena',x:'<p>Todos estos sistemas <b>trabajan juntos</b> para que el cuerpo pueda aprovechar los alimentos. Por ejemplo, cuando comemos:</p>'}
+ ]},
+ {title:'Desafío de la clase',quiz:true,steps:[{t:'Desafío',f:'all'}]}
+];
+
+const QUIZ=[
+ ['¿Cómo se llaman las sustancias pequeñas en las que se descomponen los alimentos?',['Nutrientes','Jugos gástricos','Vellosidades'],0,'Sofía','Los alimentos se descomponen en <b>nutrientes</b>.'],
+ ['¿Para qué usa el cuerpo los nutrientes?',['Solo para dormir','Producir energía, crecer y reparar tejidos','Para formar la saliva'],1,'Sofía','Energía ⚡, crecer 📏 y reparar tejidos 🩹.'],
+ ['Masticar es un ejemplo de digestión...',['Química','Mecánica'],1,'Luz Martina','Triturar y mezclar es digestión <b>mecánica</b>.'],
+ ['¿Qué órgano produce la bilis?',['El páncreas','El hígado','La vesícula biliar'],1,'Luz Martina','El <b>hígado</b> la produce y la <b>vesícula</b> la almacena.'],
+ ['¿Qué órgano está entre la boca y el esófago?',['La faringe','El estómago','El recto'],0,'Camila','La <b>faringe</b> deja pasar los alimentos hacia el esófago.'],
+ ['¿Cómo se llama la mezcla que se forma en el estómago?',['Bolo alimenticio','Quimo','Bilis'],1,'Camila','En el estómago se forma el <b>quimo</b>. En la boca se forma el bolo alimenticio.'],
+ ['¿Qué absorbe el intestino grueso?',['Agua','Saliva','Aire'],0,'Camila','El intestino grueso <b>absorbe el agua</b> y forma las heces.'],
+ ['¿Cómo se llaman las estructuras del intestino delgado que absorben los nutrientes?',['Dientes','Vellosidades intestinales','Glóbulos'],1,'Zahira','Las <b>vellosidades intestinales</b> dejan pasar los nutrientes a la sangre.'],
+ ['¿Qué nutrientes ayudan a formar y reparar tejidos?',['Carbohidratos','Proteínas','Grasas'],1,'Zahira','Las <b>proteínas</b> forman y reparan tejidos.'],
+ ['¿Qué sistema transporta los nutrientes por la sangre?',['Nervioso','Muscular','Circulatorio'],2,'María','El sistema <b>circulatorio</b> los lleva a todo el cuerpo.'],
+ ['¿Qué sistema ayuda a mover los alimentos por los órganos digestivos?',['Muscular','Linfático','Nervioso'],0,'María','Los <b>músculos</b> empujan la comida.']
+];
+
+// =====================================================================
+// MODELO 3D (coordenadas: x = izquierda de la persona, y = arriba, z = hacia adelante)
+// =====================================================================
+function catmull(pts,n=8){
+  if(pts.length<2)return pts.slice();
+  const out=[];
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+    for(let k=0;k<n;k++){const t=k/n,t2=t*t,t3=t2*t;
+      out.push([0,1,2].map(j=>0.5*((2*p1[j])+(-p0[j]+p2[j])*t+(2*p0[j]-5*p1[j]+4*p2[j]-p3[j])*t2+(-p0[j]+3*p1[j]-3*p2[j]+p3[j])*t3)));}
+  }
+  out.push(pts[pts.length-1].slice());return out;
+}
+const delgadoCtrl=(()=>{const p=[[0.1,0.1,0.14],[0.14,-0.06,0.2]];
+  for(let i=0;i<6;i++){const y=-0.17-i*0.085,a=i%2?-1:1;p.push([0.3*a,y,0.12+0.05*Math.sin(i*1.7)],[0,y-0.03,0.22],[-0.3*a,y-0.02,0.13]);}
+  p.push([-0.4,-0.69,0.1]);return p})();
+const ORG={
+ boca:{n:'Boca',c:'#E63946',tube:[[0,1.84,0.4],[0,1.84,0.42]],r:0.07,a:[0,1.84,0.42]},
+ faringe:{n:'Faringe',c:'#F28482',tube:[[0,1.8,0.3],[0,1.66,0.14],[0,1.5,0.03]],r:0.065,a:[0,1.65,0.14]},
+ esofago:{n:'Esófago',c:'#F4A261',tube:[[0,1.5,0.03],[0,1.2,-0.05],[0.02,0.86,-0.05],[0.1,0.62,0],[0.2,0.5,0.06]],r:0.055,a:[0.01,1.05,-0.05]},
+ estomago:{n:'Estómago',c:'#F72585',blobs:[[0.25,0.5,0.07,0.16],[0.4,0.42,0.1,0.21],[0.37,0.25,0.12,0.18],[0.21,0.15,0.14,0.13],[0.1,0.12,0.14,0.08]],a:[0.4,0.38,0.12]},
+ higado:{n:'Hígado',c:'#9C4A2E',blobs:[[-0.33,0.47,0.05,0.27],[-0.08,0.53,0.06,0.2],[-0.5,0.33,0.02,0.2],[-0.2,0.36,0.12,0.18]],a:[-0.38,0.5,0.1]},
+ vesicula:{n:'Vesícula biliar',c:'#52B788',blobs:[[-0.27,0.2,0.24,0.075]],a:[-0.27,0.2,0.26]},
+ pancreas:{n:'Páncreas',c:'#E9C46A',tube:[[-0.05,0.12,-0.08],[0.15,0.15,-0.1],[0.42,0.2,-0.12]],r:0.065,a:[0.2,0.15,-0.1]},
+ delgado:{n:'Intestino delgado',c:'#FFB703',tube:delgadoCtrl,r:0.055,a:[0.05,-0.4,0.2]},
+ grueso:{n:'Intestino grueso',c:'#8E5CE6',tube:[[-0.42,-0.72,0.1],[-0.52,-0.56,0.1],[-0.53,-0.15,0.1],[-0.45,-0.04,0.13],[0,-0.03,0.19],[0.45,-0.04,0.13],[0.53,-0.15,0.1],[0.53,-0.6,0.08],[0.4,-0.79,0.05],[0.15,-0.83,0.0]],r:0.085,a:[-0.53,-0.35,0.1]},
+ recto:{n:'Recto y ano',c:'#6A3FB5',tube:[[0.15,-0.83,0],[0.03,-0.92,-0.05],[0,-1.08,-0.08],[0,-1.18,-0.08]],r:0.07,a:[0,-1.1,-0.08]}
+};
+// sistemas
+const SYS={
+ circ:{c:'#D62828',items:()=>{const L=[];const h=[0.12,1.05,0.12];
+   L.push({blob:[...h,0.15],c:'#D62828',pulse:1,org:'corazon'});
+   const v=(pts,c,r)=>L.push({tube:catmull(pts,6),r,c});
+   v([h,[0.05,1.3,0],[0.05,1.6,0],[0.08,1.95,0.1]],'#D62828',0.03);
+   v([h,[0.4,1.25,0],[0.85,1.25,0],[1.0,0.5,0]],'#D62828',0.028);
+   v([h,[-0.4,1.25,0],[-0.85,1.25,0],[-1.0,0.5,0]],'#D62828',0.028);
+   v([h,[0.03,0.6,-0.18],[0.03,-0.3,-0.2],[0.25,-1.1,-0.1],[0.3,-1.6,-0.05]],'#D62828',0.035);
+   v([[0.03,-0.3,-0.2],[-0.25,-1.1,-0.1],[-0.3,-1.6,-0.05]],'#D62828',0.03);
+   v([[0.03,-0.1,-0.19],[0.1,-0.25,0.1],[0.25,-0.4,0.22]],'#D62828',0.02);
+   v([[0.03,-0.1,-0.19],[-0.15,-0.3,0.12],[-0.25,-0.5,0.22]],'#D62828',0.02);
+   v([[-0.06,-0.35,-0.15],[-0.06,0.7,-0.12],[0.08,1.0,0.05]],'#3A6EA5',0.03);
+   return L}},
+ nerv:{c:'#E0A100',items:()=>{const L=[];
+   L.push({blob:[0,2.12,-0.02,0.3],c:'#F6BD60',org:'cerebro'});
+   L.push({tube:catmull([[0,1.95,-0.15],[0,1.5,-0.3],[0,0.6,-0.36],[0,-0.3,-0.36],[0,-0.95,-0.32]],6),r:0.035,c:'#E0A100'});
+   [[0.9,[0.38,0.35,0.05]],[0.2,[0.25,-0.3,0.15]],[0.0,[-0.3,-0.45,0.12]],[0.5,[-0.4,0.3,0.0]],[1.3,[0.0,1.3,-0.05]]].forEach(([y,t])=>
+     L.push({tube:catmull([[0,y,-0.35],[t[0]*0.5,(y+t[1])/2,-0.15],t],5),r:0.014,c:'#E0A100'}));
+   return L}},
+ linf:{c:'#2A9D8F',items:()=>{const L=[];
+   L.push({tube:catmull([[0.05,-0.35,-0.15],[0.06,0.3,-0.2],[0.08,1.1,-0.15],[0.2,1.4,0.0]],6),r:0.025,c:'#2A9D8F'});
+   [[0.2,-0.4,0.0],[-0.15,-0.25,0.0],[0.0,-0.55,0.0],[0.18,1.5,0.15],[-0.18,1.5,0.15],[0.3,-0.15,0.0],[-0.3,-0.55,0.0]].forEach(p=>{
+     L.push({blob:[...p,0.045],c:'#52B788'});L.push({tube:[p,[0.05,-0.3,-0.15]],r:0.012,c:'#52B788'})});
+   return L}},
+ musc:{c:'#C1121F',items:()=>[]}
+};
+// precompute
+for(const k in ORG){const o=ORG[k];if(o.tube&&o.tube.length>2)o.path=catmull(o.tube,10);else if(o.tube)o.path=o.tube;}
+const SYSCACHE={};for(const k in SYS)SYSCACHE[k]=SYS[k].items();
+
+// food path
+const FOODSEQ=['boca','faringe','esofago','estomago','delgado','grueso','recto'];
+const FOODPATH=[],FOODMARK={};
+FOODSEQ.forEach(k=>{const o=ORG[k];const pts=o.path?o.path:o.blobs.map(b=>b.slice(0,3));const st=FOODPATH.length;pts.forEach(p=>FOODPATH.push(p));FOODMARK[k]=[st,FOODPATH.length-1]});
+const CUM=[0];for(let i=1;i<FOODPATH.length;i++){const a=FOODPATH[i-1],b=FOODPATH[i];CUM.push(CUM[i-1]+Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]))}
+const TOT=CUM[CUM.length-1];
+function tOf(k){if(k==='fin')return 1;const [a,b]=FOODMARK[k];return (CUM[Math.round((a+b)/2)])/TOT}
+function posAt(t){const d=t*TOT;let i=1;while(i<CUM.length-1&&CUM[i]<d)i++;const a=FOODPATH[i-1],b=FOODPATH[i],f=(d-CUM[i-1])/((CUM[i]-CUM[i-1])||1);return [0,1,2].map(j=>a[j]+(b[j]-a[j])*Math.min(1,Math.max(0,f)))}
+
+const FOCUS={all:[[0,0.42,0],1],abdomen:[[0,-0.2,0.1],1.55],boca:[[0,1.78,0.3],2.7],faringe:[[0,1.65,0.15],2.6],esofago:[[0,1.05,0],1.45],
+ estomago:[[0.3,0.33,0.1],2.4],ayudantes:[[-0.1,0.32,0.1],2.0],delgado:[[0,-0.32,0.12],2.1],grueso:[[0,-0.38,0.1],1.75],recto:[[0.05,-0.92,0],2.6]};
+
+// =====================================================================
+// RENDER 3D
+// =====================================================================
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
+window.addEventListener('resize',resize);
+const cam={yaw:0.35,pitch:0.12,tx:0,ty:0.42,tz:0,z:1,gyaw:0.35,gt:[0,0.42,0],gz:1};
+let dragging=false,lastInteract=0,swayBase=0;
+function rot(p){const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw),cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);
+  const x=p[0]*cy+p[2]*sy,z=-p[0]*sy+p[2]*cy,y=p[1];return [x,y*cp-z*sp,y*sp+z*cp]}
+let tr;function proj(p){const r=rot(p);const S=Math.min(H/4.1,W/2.6)*cam.z;const f=6/(6-(r[2]-tr[2]));
+  return {x:W/2+(r[0]-tr[0])*S*f,y:H/2-(r[1]-tr[1])*S*f,z:r[2],s:S*f}}
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;
+  const f=v=>Math.max(0,Math.min(255,Math.round(amt<0?v*(1+amt):v+(255-v)*amt)));return `rgb(${f(r)},${f(g)},${f(b)})`}
+
+const view={hl:[],lab:false,sys:[],ptr:null,localPtr:null,food:null,foodT:0,foodTarget:0,foodSpeed:0.35,foodEmoji:'🍎'};
+let T0=performance.now();
+function frame(now){
+  const dt=Math.min(0.05,(now-T0)/1000);T0=now;const time=now/1000;
+  // camera easing
+  const k=1-Math.pow(0.002,dt);
+  if(!dragging){
+    if(followLeaderYaw!=null && isFollowing()) cam.gyaw=followLeaderYaw;
+    else if(now-lastInteract>4000) cam.gyaw=swayBase+0.28*Math.sin(time*0.45);
+    cam.yaw+= (cam.gyaw-cam.yaw)*k*0.8;
+  }
+  cam.tx+=(cam.gt[0]-cam.tx)*k;cam.ty+=(cam.gt[1]-cam.ty)*k;cam.tz+=(cam.gt[2]-cam.tz)*k;cam.z+=(cam.gz-cam.z)*k;
+  if(view.food){const d=view.foodTarget-view.foodT;const s=view.foodSpeed*dt;view.foodT+=Math.abs(d)<s?d:Math.sign(d)*s;}
+  draw(time);
+  requestAnimationFrame(frame);
+}
+function draw(time){
+  cx.clearRect(0,0,W,H);
+  tr=rot([cam.tx,cam.ty,cam.tz]);
+  // body silhouette
+  const S=Math.min(H/4.1,W/2.6)*cam.z;
+  const torso=proj([0,0.12,0]);
+  const rx=Math.hypot(0.95*Math.cos(cam.yaw),0.55*Math.sin(cam.yaw))*S*torso.s/S;
+  cx.save();cx.globalAlpha=0.5;cx.fillStyle='#FFE0C2';cx.strokeStyle='#E7B98F';cx.lineWidth=2.5;
+  // legs hint
+  [-0.35,0.35].forEach(lx=>{const a=proj([lx,-1.15,0]),b=proj([lx*1.05,-1.9,0]);cx.lineCap='round';cx.lineWidth=0.42*a.s;cx.strokeStyle='#FFE0C2';cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()});
+  [-1,1].forEach(sd=>{const a=proj([0.8*sd,1.22,0]),b=proj([1.02*sd,0.35,0.05]);cx.lineWidth=0.3*a.s;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()});
+  cx.lineWidth=2.5;cx.strokeStyle='#E7B98F';
+  cx.beginPath();cx.ellipse(torso.x,torso.y,rx,1.38*torso.s,0,0,Math.PI*2);cx.fill();cx.stroke();
+  const nk=proj([0,1.55,0]);cx.fillRect(nk.x-0.17*nk.s,nk.y-0.12*nk.s,0.34*nk.s,0.26*nk.s);
+  const hd=proj([0,2.02,0]);cx.beginPath();cx.arc(hd.x,hd.y,0.46*hd.s,0,Math.PI*2);cx.fill();cx.stroke();
+  cx.restore();
+  // eyes (front only)
+  [-0.15,0.15].forEach(ex=>{const e=proj([ex,2.1,0.41]);if(e.z>tr[2]-0.2){cx.fillStyle='#2B2D42';cx.beginPath();cx.arc(e.x,e.y,0.035*e.s,0,7);cx.fill()}});
+  // collect drawables
+  const items=[];const hlOn=view.hl.length>0||view.sys.length>0;
+  const ptrOrg=view.ptr||view.localPtr;
+  for(const key in ORG){const o=ORG[key];const lit=!hlOn||view.hl.includes(key)||ptrOrg===key;
+    const alpha=lit?1:0.22;const glow=view.hl.includes(key)||ptrOrg===key;
+    if(o.blobs)o.blobs.forEach(b=>items.push({k:'s',p:b,r:b[3],c:o.c,a:alpha,glow,org:key}));
+    if(o.path){const musc=view.sys.includes('musc')&&['esofago','delgado','grueso','estomago'].includes(key);
+      for(let i=0;i<o.path.length-1;i++){let r=o.r;
+        if(musc){const ph=(i/o.path.length*6-time*1.6)%1;const w=(ph+1)%1;r*=1+0.7*Math.exp(-Math.pow((w-0.5)*8,2));}
+        items.push({k:'t',a1:o.path[i],a2:o.path[i+1],r,c:o.c,a:alpha,glow,org:key})}}
+  }
+  view.sys.forEach(sk=>SYSCACHE[sk].forEach(it=>{
+    if(it.blob){let r=it.blob[3];if(it.pulse)r*=1+0.12*Math.max(0,Math.sin(time*7));items.push({k:'s',p:it.blob,r,c:it.c,a:1,glow:true,org:it.org})}
+    else for(let i=0;i<it.tube.length-1;i++)items.push({k:'t',a1:it.tube[i],a2:it.tube[i+1],r:it.r,c:it.c,a:0.95,flow:sk==='circ'})}));
+  for(const it of items){if(it.k==='s'){it.P=proj(it.p);it.d=it.P.z}else{it.P1=proj(it.a1);it.P2=proj(it.a2);it.d=(it.P1.z+it.P2.z)/2}}
+  items.sort((a,b)=>a.d-b.d);
+  cx.lineCap='round';
+  for(const it of items){
+    cx.globalAlpha=it.a;
+    if(it.glow&&it.a===1){cx.shadowColor='rgba(255,200,0,.9)';cx.shadowBlur=14}else cx.shadowBlur=0;
+    if(it.k==='s'){const P=it.P,R=it.r*P.s;const g=cx.createRadialGradient(P.x-R*0.35,P.y-R*0.4,R*0.1,P.x,P.y,R);
+      g.addColorStop(0,shade(it.c,0.45));g.addColorStop(0.7,it.c);g.addColorStop(1,shade(it.c,-0.3));cx.fillStyle=g;cx.beginPath();cx.arc(P.x,P.y,R,0,7);cx.fill();}
+    else{const w=2*it.r*(it.P1.s+it.P2.s)/2;cx.strokeStyle=shade(it.c,-0.25);cx.lineWidth=w;cx.beginPath();cx.moveTo(it.P1.x,it.P1.y);cx.lineTo(it.P2.x,it.P2.y);cx.stroke();
+      cx.shadowBlur=0;cx.strokeStyle=it.c;cx.lineWidth=w*0.7;cx.stroke();cx.strokeStyle=shade(it.c,0.4);cx.lineWidth=w*0.22;cx.beginPath();cx.moveTo(it.P1.x-w*0.15,it.P1.y-w*0.15);cx.lineTo(it.P2.x-w*0.15,it.P2.y-w*0.15);cx.stroke();}
+  }
+  cx.globalAlpha=1;cx.shadowBlur=0;
+  // flowing nutrient dots in circulatory
+  if(view.sys.includes('circ')){SYSCACHE.circ.forEach((it,ii)=>{if(!it.tube)return;for(let j=0;j<2;j++){const f=((time*0.35+j*0.5+ii*0.13)%1);const idx=Math.floor(f*(it.tube.length-1));const P=proj(it.tube[idx]);
+    cx.fillStyle=['#FFB703','#FB8500','#06D6A0','#3A86FF'][(ii+j)%4];cx.beginPath();cx.arc(P.x,P.y,0.03*P.s,0,7);cx.fill()}})}
+  // food
+  if(view.food){const P=proj(posAt(view.foodT));const sz=Math.max(18,0.2*P.s);cx.font=`${sz}px serif`;cx.textAlign='center';cx.textBaseline='middle';
+    cx.save();cx.shadowColor='rgba(0,0,0,.25)';cx.shadowBlur=6;cx.fillText(view.foodEmoji,P.x,P.y+Math.sin(time*6)*2);cx.restore();}
+  // labels
+  const labs=new Set();if(view.lab)view.hl.forEach(k=>labs.add(k));if(ptrOrg)labs.add(ptrOrg);
+  labs.forEach(k=>{const o=ORG[k];if(!o)return;const P=proj(o.a);const right=P.x>=W/2;const lx=right?Math.min(W-8,P.x+40):Math.max(8,P.x-40);const ly=P.y-18;
+    cx.strokeStyle='#2B2D42';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(P.x,P.y);cx.lineTo(lx,ly);cx.stroke();
+    cx.font='800 13px "Baloo 2",system-ui';const tw=cx.measureText(o.n).width+14;const bx=right?Math.min(W-tw-4,lx):Math.max(4,lx-tw);
+    cx.fillStyle='#fff';roundRect(bx,ly-11,tw,22,8);cx.fill();cx.strokeStyle=o.c;cx.lineWidth=2;cx.stroke();
+    cx.fillStyle='#2B2D42';cx.textAlign='left';cx.textBaseline='middle';cx.fillText(o.n,bx+7,ly+1)});
+  // pointer pulse
+  if(ptrOrg&&ORG[ptrOrg]){const P=proj(ORG[ptrOrg].a);const ph=(time*1.5)%1;cx.strokeStyle=`rgba(230,57,70,${1-ph})`;cx.lineWidth=4;cx.beginPath();cx.arc(P.x,P.y,10+ph*28,0,7);cx.stroke();
+    cx.fillStyle='#E63946';cx.beginPath();cx.arc(P.x,P.y,6,0,7);cx.fill();}
+}
+function roundRect(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
+
+// picking
+function pick(px,py){let best=null,bd=28;
+  for(const key in ORG){const o=ORG[key];
+    const test=(pts)=>pts.forEach(p=>{const P=proj(p);const d=Math.hypot(P.x-px,P.y-py)-(o.blobs?0.12*P.s:0);if(d<bd){bd=d;best=key}});
+    if(o.blobs)test(o.blobs.map(b=>b.slice(0,3)));if(o.path)test(o.path.filter((_,i)=>i%2===0));}
+  return best}
+
+// pointer events
+let down=null;
+cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,yaw:cam.yaw,moved:false};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-down.x;if(Math.abs(dx)>6||Math.abs(e.clientY-down.y)>6)down.moved=true;
+  if(down.moved){dragging=true;lastInteract=performance.now();cam.yaw=down.yaw+dx*0.012;cam.gyaw=cam.yaw;swayBase=cam.yaw;if(isFollowing())userRotatedAt=performance.now();}});
+cv.addEventListener('pointerup',e=>{if(down&&!down.moved){const r=cv.getBoundingClientRect();const k=pick(e.clientX-r.left,e.clientY-r.top);
+    if(canControl()&&pointMode){state.ptr=k||null;applyView();broadcast();}else{view.localPtr=k;clearTimeout(lpT);lpT=setTimeout(()=>view.localPtr=null,3500);}}
+  down=null;dragging=false;lastInteract=performance.now()});
+let lpT;
+
+// =====================================================================
+// ESTADO Y UI
+// =====================================================================
+const state={p:0,s:0,ptr:null,q:{i:0,rev:false}};
+let pointMode=false;
+function curPart(){return PARTS[state.p]}
+function curStep(){return curPart().steps[state.s]}
+
+function applyView(fromStep){
+  const P=curPart(),st=curStep();
+  view.hl=st.hl||[];view.lab=!!st.lab;view.sys=st.sys||[];view.ptr=state.ptr;
+  const fk=FOCUS[st.f]||FOCUS.all;
+  if(fromStep){cam.gt=fk[0].slice();cam.gz=fk[1];}
+  view.foodEmoji=P.food||'🍎';
+  if(st.food&&P.food){
+    const to=tOf(st.food.to);
+    if(fromStep){const had=view.food&&lastPart===state.p;
+      view.foodT=st.food.from?tOf(st.food.from):(had?view.foodT:to);
+      view.foodSpeed=st.food.slow?0.09:0.22;}
+    view.food=true;view.foodTarget=to;
+  }else view.food=null;
+  lastPart=state.p;
+}
+let lastPart=-1;
+
+const $=id=>document.getElementById(id);
+function renderAll(fromStep=true){applyView(fromStep);renderWho();renderCard();renderCtrl();}
+function renderWho(){const pr=PRESENTERS[state.p],P=curPart();
+  $('who').innerHTML=`<div class="avatar" style="background:${pr.c}">${pr.e}</div><div>${state.p>0&&state.p<6?`<small>PARTE ${state.p} · EXPLICA</small><b>${pr.n}</b>`:`<small>${state.p===0?'BIENVENIDOS':'PARA TODA LA CLASE'}</small><b>${P.title}</b>`}</div>`;
+  $('card').style.borderTopColor=pr.c;}
+function renderCtrl(){
+  const P=curPart();const show=canControl();
+  $('ctrl').style.display=show&&!P.quiz?'flex':'none';
+  $('parts').style.display=show?'flex':'none';
+  $('btnPoint').style.display=isPres?'block':'none';$('btnOut').style.display=isPres?'block':'none';
+  $('btnPoint').classList.toggle('on',pointMode);
+  $('dots').innerHTML=P.steps.map((_,i)=>`<i class="${i<=state.s?'on':''}"></i>`).join('');
+  $('prev').disabled=state.p===0&&state.s===0;
+  $('parts').innerHTML=PRESENTERS.map((pr,i)=>`<button class="${i===state.p?'on':''}" style="background:${pr.c}" data-p="${i}">${i===0?'🏠':i===6?'🏆 Desafío':i+'. '+pr.n}</button>`).join('');
+  $('parts').querySelectorAll('button').forEach(b=>b.onclick=()=>goPart(+b.dataset.p));
+  // follow bar for viewers
+  const fbx=$('followbar');
+  if(live&&!isPres){fbx.style.display='flex';fbx.innerHTML=follow?'<button id="fbtn">🔓 Explorar por mi cuenta</button>':'<button id="fbtn" style="border-color:#E63946;color:#E63946">🔴 Volver a seguir la exposición</button>';
+    $('fbtn').onclick=()=>{follow=!follow;if(follow&&leaderState)applyRemote(leaderState,true);setBadge();renderAll(false)};}
+  else fbx.style.display='none';
+}
+function stepCount(){return curPart().steps.length}
+function goStep(d){let p=state.p,s=state.s+d;
+  if(s>=PARTS[p].steps.length){if(p<PARTS.length-1){p++;s=0}else s=PARTS[p].steps.length-1}
+  if(s<0){if(p>0){p--;s=PARTS[p].steps.length-1}else s=0}
+  state.p=p;state.s=s;state.ptr=null;renderAll(true);broadcast();}
+function goPart(p){state.p=p;state.s=0;state.ptr=null;if(PARTS[p].quiz){state.q={i:0,rev:false};clearAnswers();liveCounts=[];}renderAll(true);broadcast();}
+$('prev').onclick=()=>goStep(-1);$('next').onclick=()=>goStep(1);
+$('btnAll').onclick=()=>{cam.gt=FOCUS.all[0].slice();cam.gz=1};
+$('btnPoint').onclick=()=>{pointMode=!pointMode;if(!pointMode){state.ptr=null;applyView();broadcast()}renderCtrl()};
+
+// ---------- panels ----------
+function panel(name){
+  switch(name){
+  case 'portada':return `<div class="chain">${PRESENTERS.slice(1,6).map((p,i)=>`<span style="background:${p.c};color:#fff"><span class="e">${p.e}</span>${i+1}. ${p.n}</span>`).join('')}</div>`;
+  case 'usos':return `<div class="grid2" style="grid-template-columns:repeat(3,1fr)">${[['⚡','Producir energía','#FB8500'],['📏','Crecer','#3A86FF'],['🩹','Reparar tejidos','#2A9D8F']].map(a=>`<div class="tile" style="background:${a[2]};text-align:center"><span class="e">${a[0]}</span>${a[1]}</div>`).join('')}</div>`;
+  case 'manzana':return `<div class="chain"><span><span class="e">🍎</span>La digiere</span><i>➜</i><span><span class="e">🧲</span>Absorbe sus nutrientes</span><i>➜</i><span><span class="e">💪</span>Los aprovecha para funcionar</span></div>`;
+  case 'mecanica':return svgMecanica();
+  case 'quimica':return svgQuimica();
+  case 'organos':return `<div class="olist">${[['boca','Tritura los alimentos y los mezcla con saliva.'],['esofago','Transporta los alimentos hasta el estómago.'],['estomago','Mezcla los alimentos con los jugos gástricos.'],['delgado','Termina gran parte de la digestión y absorbe los nutrientes.'],['grueso','Absorbe agua y forma los desechos.']].map(a=>`<div><i style="background:${ORG[a[0]].c}"></i><span><b>${ORG[a[0]].n}:</b> ${a[1]}</span></div>`).join('')}</div>`;
+  case 'ayudantes':return `<div class="olist">${[['higado','Produce la <b>bilis</b>.'],['pancreas','Produce <b>enzimas digestivas</b>.'],['vesicula','<b>Almacena</b> la bilis.']].map(a=>`<div><i style="background:${ORG[a[0]].c}"></i><span><b>${ORG[a[0]].n}:</b> ${a[1]}</span></div>`).join('')}</div>`;
+  case 'villi':return svgVilli(false);
+  case 'villiBanana':return svgVilli(true);
+  case 'nutr4':return `<p style="margin:0 0 8px">Cada nutriente cumple una <b>función diferente</b>:</p><div class="grid2">${[['🍞','Carbohidratos','Aportan energía.','#FB8500'],['🍗','Proteínas','Ayudan a formar y reparar tejidos.','#E63946'],['🥑','Grasas','Aportan y almacenan energía.','#E9A800'],['🥦','Vitaminas y minerales','Regulan diferentes funciones del cuerpo.','#2A9D8F']].map(a=>`<div class="tile" style="background:${a[3]}"><span class="e">${a[0]}</span><b>${a[1]}</b>${a[2]}</div>`).join('')}</div>`;
+  case 'cadena':return `<div class="chain"><span><span class="e">🍽️</span>El digestivo transforma los alimentos</span><i>➜</i><span><span class="e">❤️</span>El circulatorio transporta los nutrientes</span><i>➜</i><span><span class="e">⚡</span>Las células los usan para obtener energía</span></div>`;
+  }return ''}
+function svgMecanica(){
+  let crumbs='';for(let i=0;i<7;i++){const dx=(i-3)*14;crumbs+=`<rect x="${150+i*3-10}" y="92" width="8" height="8" rx="2" fill="#D4A373" style="--dx:${dx}px;animation:crumb 1.2s ${i*0.17}s infinite"/>`}
+  const teeth=(y,up)=>Array.from({length:6},(_,i)=>`<rect x="${92+i*20}" y="${y}" width="17" height="20" rx="${up?'2':'5'}" fill="#fff" stroke="#ccc"/>`).join('');
+  return `<svg class="anim" viewBox="0 0 300 170"><rect x="80" y="20" width="140" height="22" rx="10" fill="#F28482"/><g style="animation:chomp 1.2s infinite">${teeth(40,1)}</g>
+  <ellipse cx="150" cy="96" rx="34" ry="14" fill="#E6B17E" stroke="#B5835A" stroke-width="2"/><text x="150" y="101" font-size="13" text-anchor="middle" fill="#6b4226" font-weight="700">comida</text>${crumbs}
+  ${teeth(110,0)}<rect x="80" y="128" width="140" height="22" rx="10" fill="#F28482"/>
+  <text x="150" y="166" font-size="13" text-anchor="middle" fill="#2B2D42" font-weight="800">Los dientes trituran ⬇️⬆️</text></svg>`}
+function svgQuimica(){
+  let drops='';for(let i=0;i<6;i++)drops+=`<path d="M${95+i*22} 40 q-6 10 0 14 q6 -4 0 -14z" fill="#4CC9F0" style="animation:drop 1.6s ${i*0.25}s infinite"/>`;
+  let sug='';for(let i=0;i<10;i++){const dx=(Math.cos(i)*70).toFixed(0),dy=(Math.sin(i*1.3)*40+20).toFixed(0);sug+=`<circle cx="150" cy="100" r="4" fill="${['#FFB703','#FB8500','#06D6A0'][i%3]}" style="--dx:${dx}px;--dy:${dy}px;animation:sugar 2.4s ${i*0.24}s infinite"/>`}
+  return `<svg class="anim" viewBox="0 0 300 170"><text x="150" y="22" font-size="13" text-anchor="middle" font-weight="800" fill="#1d6f99">💧 saliva (con enzimas)</text>${drops}
+  <g style="transform-origin:150px 100px;animation:melt 4.8s infinite"><rect x="115" y="72" width="70" height="56" rx="14" fill="#E9C46A" stroke="#B08B3A" stroke-width="3"/><rect x="125" y="82" width="50" height="36" rx="8" fill="#F8E6A8"/><text x="150" y="105" font-size="13" text-anchor="middle" font-weight="800" fill="#7a5a1a">PAN</text></g>${sug}
+  <text x="150" y="160" font-size="12.5" text-anchor="middle" font-weight="800" fill="#2B2D42">El pan se "deshace" en partes chiquitas</text></svg>`}
+function svgVilli(banana){
+  let v='',dots='';const cols=['#FB8500','#E63946','#E9A800','#2A9D8F'];
+  for(let i=0;i<7;i++){const x=30+i*40;v+=`<path d="M${x-13} 150 L${x-13} 85 Q${x} 62 ${x+13} 85 L${x+13} 150Z" fill="#F7A1B5" stroke="#d66a85" stroke-width="2"/><path d="M${x-5} 150 L${x-5} 88 Q${x} 78 ${x+5} 88 L${x+5} 150" fill="none" stroke="#D62828" stroke-width="3"/>`;
+    for(let j=0;j<2;j++){const k=i*2+j;dots+=`<circle cx="${x+(j?6:-6)}" cy="25" r="5" fill="${cols[k%4]}" style="--dy:85px;--dx:${(280-x)}px;--dy2:150px;animation:absorb 3.2s ${(k*0.37)%3.2}s infinite"/>`}}
+  return `<svg class="anim" viewBox="0 0 300 200"><text x="10" y="16" font-size="12" font-weight="800" fill="#7a5a1a">${banana?'🍌 nutrientes de la banana':'nutrientes'} (dentro del intestino)</text>
+  ${v}<rect x="0" y="150" width="300" height="26" fill="#D62828"/><text x="150" y="168" font-size="12.5" text-anchor="middle" fill="#fff" font-weight="800">🩸 SANGRE ➜ a todo el cuerpo</text>${dots}
+  <text x="150" y="194" font-size="12" text-anchor="middle" font-weight="800" fill="#d66a85">Vellosidades intestinales (como deditos)</text></svg>`}
+
+// ---------- card ----------
+function renderCard(){
+  const P=curPart(),st=curStep();const card=$('card');
+  if(P.quiz){renderQuiz();return}
+  card.innerHTML=`<div class="stepn">${state.p===0?'':`Paso ${state.s+1} de ${P.steps.length}`}</div><h2>${st.t}</h2>${st.x||''}${st.pn?`<div class="panel">${panel(st.pn)}</div>`:''}`;
+}
+
+// ---------- quiz ----------
+let myAns={},myScore=0,freeQ={i:0,ans:null,score:0};
+function renderQuiz(){
+  const card=$('card');
+  const liveQuiz=live&&(isPres||follow);
+  if(!liveQuiz){ // solo
+    const qi=freeQ.i;
+    if(qi>=QUIZ.length){card.innerHTML=`<h2>🏁 ¡Terminaste!</h2><div class="big">${'⭐'.repeat(freeQ.score>=9?3:freeQ.score>=6?2:1)}</div><p style="text-align:center;font-weight:800">Acertaste ${freeQ.score} de ${QUIZ.length}</p><div style="text-align:center"><button class="btn" id="again">Otra vez</button></div>`;
+      $('again').onclick=()=>{freeQ={i:0,ans:null,score:0};renderQuiz()};return}
+    const [q,o,a,who,why]=QUIZ[qi];
+    card.innerHTML=`<div class="qmeta"><span>Pregunta ${qi+1} de ${QUIZ.length}</span><span>Tema de ${who}</span></div><h2>${q}</h2><div class="opts">${o.map((t,i)=>`<button class="opt ${freeQ.ans!=null?(i===a?'ok':(i===freeQ.ans?'bad':'')):''}" data-i="${i}" ${freeQ.ans!=null?'disabled':''}><span>${t}</span></button>`).join('')}</div>
+     ${freeQ.ans!=null?`<div class="fb" style="background:${freeQ.ans===a?'#E3F6F2':'#FDECEC'}">${freeQ.ans===a?'✅ <b>¡Correcto!</b> ':'❌ <b>Casi...</b> '}${why}</div><div style="text-align:center;margin-top:8px"><button class="btn" id="nq">Siguiente ➡</button></div>`:''}`;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(freeQ.ans!=null)return;freeQ.ans=+b.dataset.i;if(freeQ.ans===a)freeQ.score++;renderQuiz()});
+    if($('nq'))$('nq').onclick=()=>{freeQ.i++;freeQ.ans=null;renderQuiz()};return;
+  }
+  const q=state.q;
+  if(q.i>=QUIZ.length){card.innerHTML=`<h2>🏁 ¡Fin del desafío!</h2><div class="big">🎉</div>${!isPres?`<p style="text-align:center;font-weight:800">Acertaste ${myScore} de ${QUIZ.length}</p>`:'<p style="text-align:center">¡Gracias por participar!</p>'}${isPres?'<div style="text-align:center"><button class="btn gray" id="qreset">Reiniciar desafío</button></div>':''}`;
+    if($('qreset'))$('qreset').onclick=()=>{state.q={i:0,rev:false};clearAnswers();liveCounts=[];renderQuiz();broadcast()};return}
+  const [qt,o,a,who,why]=QUIZ[q.i];const total=(liveCounts||[]).reduce((s,x)=>s+x,0);const mine=myAns[q.i];
+  card.innerHTML=`<div class="qmeta"><span>Pregunta ${q.i+1} de ${QUIZ.length}</span><span>Tema de ${who}</span></div><h2>${qt}</h2>
+   <div class="opts">${o.map((t,i)=>{const c=(liveCounts||[])[i]||0;const pct=total?Math.round(c/total*100):0;
+     const cls=q.rev?(i===a?'ok':(i===mine?'bad':'')):(i===mine?'mine':'');
+     return `<button class="opt ${cls}" data-i="${i}" ${isPres||q.rev?'disabled':''}>${(q.rev||isPres)?`<div class="bar" style="width:${pct}%"></div>`:''}<span>${t}${(q.rev||isPres)?`<b class="cnt">${c}</b>`:''}</span></button>`}).join('')}</div>
+   ${isPres?`<p style="margin:8px 0 0;font-weight:800;color:#8D99AE">👥 ${total} respondieron · ${viewerCount} conectados</p><div style="display:flex;gap:8px;margin-top:8px">${!q.rev?'<button class="btn" id="qrev" style="flex:1">Mostrar respuesta</button>':`<button class="btn" id="qnext" style="flex:1">${q.i<QUIZ.length-1?'Siguiente pregunta ➡':'Terminar 🏁'}</button>`}</div>`:''}
+   ${q.rev?`<div class="fb" style="background:#EAF4FF">💡 ${why}</div>`:(!isPres?`<p style="margin:8px 0 0;color:#8D99AE;font-weight:700">${mine!=null?'✔️ ¡Respuesta enviada! Esperá que muestren la correcta.':'Tocá tu respuesta 👆'}</p>`:'')}`;
+  if(!isPres)card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(q.rev)return;myAns[q.i]=+b.dataset.i;sendAnswer();renderQuiz()});
+  if($('qrev'))$('qrev').onclick=()=>{state.q.rev=true;renderQuiz();broadcast()};
+  if($('qnext'))$('qnext').onclick=()=>{state.q={i:q.i+1,rev:false};watchAnswers(state.q.i);liveCounts=[];renderQuiz();broadcast()};
+}
+
+// =====================================================================
+// EN VIVO (Firebase Realtime Database)
+// =====================================================================
+let db=null,auth=null,isPres=false,live=false,follow=true,leaderState=null,lastLive=0,followLeaderYaw=null,viewerCount=0,userRotatedAt=0,liveCounts=[];
+const CID=(()=>{let c=null;try{c=localStorage.getItem('cid')}catch(e){}if(!c){c='c'+Math.random().toString(36).slice(2,12);try{localStorage.setItem('cid',c)}catch(e){}}return c})();
+const WANTS_PRES=location.hash==='#presentar';
+function canControl(){return !live||isPres||!follow}
+function isFollowing(){return live&&!isPres&&follow&&performance.now()-userRotatedAt>5000}
+function setBadge(){const b=$('badge');
+  if(isPres){b.className='badge b-pres';b.textContent=`🎤 Presentando · 👥 ${viewerCount}`}
+  else if(live&&follow&&Date.now()-lastLive<15000){b.className='badge b-live';b.textContent='🔴 EN VIVO'}
+  else if(live&&!follow){b.className='badge b-free';b.textContent='Explorando'}
+  else if(live){b.className='badge b-free';b.textContent='Esperando la exposición...'}
+  else{b.className='badge b-free';b.textContent='Modo libre'}}
+setInterval(setBadge,2000);
+function snapshot(){return {p:state.p,s:state.s,ptr:state.ptr||null,q:{i:state.q.i,rev:!!state.q.rev},yaw:+cam.yaw.toFixed(3)}}
+function broadcast(){if(db&&isPres)db.ref('estado').set(snapshot()).catch(e=>showErr('No se pudo enviar: '+e.message))}
+function clearAnswers(){if(db&&isPres)db.ref('respuestas').remove().catch(()=>{})}
+const scored={};
+function applyRemote(d,force){
+  if(!d||typeof d!=='object')return;
+  const p=Math.max(0,Math.min(PARTS.length-1,d.p|0)),s=Math.max(0,Math.min(PARTS[p].steps.length-1,d.s|0));
+  const changed=force||p!==state.p||s!==state.s;
+  const qOld=JSON.stringify(state.q);state.p=p;state.s=s;state.ptr=(typeof d.ptr==='string'&&ORG[d.ptr])?d.ptr:null;
+  if(typeof d.yaw==='number')followLeaderYaw=d.yaw;
+  if(d.q&&typeof d.q==='object'){const qi=d.q.i|0;
+    if(qi!==state.q.i)watchAnswers(qi);
+    if(d.q.rev&&myAns[qi]===QUIZ[qi]?.[2]&&!scored[qi]){scored[qi]=1;myScore++;}
+    state.q={i:qi,rev:!!d.q.rev};}
+  if(changed)renderAll(true);else{applyView(false);if(PARTS[state.p].quiz&&JSON.stringify(state.q)!==qOld)renderQuiz();}
+}
+function sendAnswer(){if(db)db.ref(`respuestas/${state.q.i}/${CID}`).set(myAns[state.q.i]).catch(()=>{})}
+let ansRef=null;
+function watchAnswers(qi){if(!db)return;if(ansRef)ansRef.off();ansRef=db.ref('respuestas/'+qi);
+  ansRef.on('value',snap=>{const c=[0,0,0,0];snap.forEach(ch=>{const v=ch.val();if(v>=0&&v<4)c[v]++});liveCounts=c;if(PARTS[state.p].quiz)renderQuiz()})}
+function tally(){}
+function showErr(m){const el=$('liveMsg');el.style.display='block';el.textContent='⚠️ '+m;setTimeout(()=>el.style.display='none',6000)}
+let lastYawSent=99;
+setInterval(()=>{if(db&&isPres&&Math.abs(cam.yaw-lastYawSent)>0.02){lastYawSent=cam.yaw;db.ref('estado/yaw').set(+cam.yaw.toFixed(3)).catch(()=>{})}},200);
+setInterval(()=>{if(db&&isPres)db.ref('latido').set(firebase.database.ServerValue.TIMESTAMP).catch(()=>{})},5000);
+
+function loadScript(src){return new Promise((ok,ko)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})}
+async function initLive(){
+  if(!FIREBASE_CONFIG||!FIREBASE_CONFIG.databaseURL||FIREBASE_CONFIG.databaseURL.includes('PEGAR'))return;
+  try{
+    const V='10.12.2',B=`https://www.gstatic.com/firebasejs/${V}/`;
+    await loadScript(B+'firebase-app-compat.js');
+    await Promise.all([loadScript(B+'firebase-database-compat.js'),loadScript(B+'firebase-auth-compat.js')]);
+    firebase.initializeApp(FIREBASE_CONFIG);db=firebase.database();auth=firebase.auth();
+  }catch(e){console.warn('Firebase no cargó',e);return}
+  live=true;
+  // conectados
+  const me=db.ref('conectados/'+CID);
+  db.ref('.info/connected').on('value',s=>{if(s.val()===true){me.onDisconnect().remove();me.set(true)}});
+  db.ref('conectados').on('value',s=>{viewerCount=Math.max(0,s.numChildren()-(isPres?1:0));setBadge();if(isPres&&PARTS[state.p].quiz)renderQuiz()});
+  db.ref('latido').on('value',()=>{lastLive=Date.now();setBadge()});
+  db.ref('estado').on('value',s=>{const d=s.val();if(!d)return;lastLive=Date.now();leaderState=d;if(!isPres&&follow)applyRemote(d);setBadge()});
+  watchAnswers(state.q.i);
+  auth.onAuthStateChanged(u=>{isPres=!!u&&WANTS_PRES;if(isPres){$('login').style.display='none';broadcast()}else if(WANTS_PRES)$('login').style.display='flex';setBadge();renderAll(false)});
+  setBadge();renderAll(false);
+}
+function doLogin(){const em=$('lgEmail').value.trim(),pw=$('lgPass').value;$('lgErr').textContent='Entrando...';
+  auth.signInWithEmailAndPassword(em,pw).then(()=>{$('lgErr').textContent=''}).catch(e=>{$('lgErr').textContent='No pude entrar: revisá el mail y la clave.'})}
+function doLogout(){if(auth)auth.signOut();location.hash='';location.reload()}
+
+// =====================================================================
+// JUEGOS
+// =====================================================================
+const ORDER=['Boca','Faringe','Esófago','Estómago','Intestino delgado','Intestino grueso','Recto y ano'];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+let ostep=0;
+function initOrder(){ostep=0;const box=$('orderBox'),ch=$('chips'),fb=$('orderFb');box.innerHTML='';ch.innerHTML='';fb.style.display='none';
+  shuffle(ORDER).forEach(n=>{const b=document.createElement('button');b.className='chip';b.textContent=n;
+    b.onclick=()=>{if(n===ORDER[ostep]){ostep++;b.classList.add('placed');box.appendChild(b);b.onclick=null;fb.style.display='none';
+        if(ostep===ORDER.length){fb.style.display='block';fb.style.background='#E3F6F2';fb.innerHTML='🎉 <b>¡Perfecto!</b> '+ORDER.join(' ➜ ')}}
+      else{b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');fb.style.display='block';fb.style.background='#FDECEC';fb.innerHTML='🤔 Todavía no. ¿Qué viene después de <b>'+(ostep?ORDER[ostep-1]:'comer')+'</b>?'}};
+    ch.appendChild(b)})}
+initOrder();
+function miniGame(el,items,opts){let i=0,ok=0;const list=shuffle(items);
+  const show=(fb)=>{if(i>=list.length){el.innerHTML=`<p style="font-weight:800;text-align:center">🏆 ${ok} de ${list.length}</p><div style="text-align:center"><button class="btn gray">Otra vez</button></div>`;el.querySelector('button').onclick=()=>miniGame(el,items,opts);return}
+    el.innerHTML=`<p style="font-size:19px;font-weight:800;text-align:center;min-height:52px">${list[i][0]}</p><div style="display:grid;grid-template-columns:repeat(${opts.length>2?2:2},1fr);gap:8px">${opts.map((o,k)=>`<button class="btn" style="background:${o[1]};box-shadow:none" data-k="${k}">${o[0]}</button>`).join('')}</div>${fb||''}`;
+    el.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,good=k===list[i][1];if(good)ok++;const msg=`<div class="fb" style="background:${good?'#E3F6F2':'#FDECEC'}">${good?'✅ ¡Bien!':'❌ Era <b>'+opts[list[i][1]][0]+'</b>'} ${list[i][2]||''}</div>`;i++;show(msg)})};show()}
+miniGame($('mq'),[['😬 Masticar un alfajor',0,''],['💧 La saliva descompone el pan',1,''],['🌀 El estómago mezcla la comida moviéndose',0,'Mezclar es mecánica.'],['🧪 Los jugos gástricos deshacen la comida',1,''],['🦷 Los dientes trituran una manzana',0,''],['🧫 Las enzimas del páncreas descomponen los alimentos',1,'']],[['⚙️ Mecánica','#FB8500'],['🧪 Química','#3A86FF']]);
+miniGame($('sg'),[['Transporta los nutrientes por la sangre',0,''],['Controla y coordina la digestión',1,''],['Mueve los alimentos por los órganos',2,''],['Ayuda en las defensas y lleva grasas',3,''],['El corazón bombea los nutrientes a todo el cuerpo',0,''],['El cerebro avisa que tenés hambre',1,'']],[['❤️ Circulatorio','#D62828'],['🧠 Nervioso','#E0A100'],['💪 Muscular','#C1121F'],['🛡️ Linfático','#2A9D8F']]);
+
+// tabs
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===b.dataset.v));if(b.dataset.v==='vMaq')resize()});
+
+// start
+resize();renderAll(true);requestAnimationFrame(frame);
+initLive();
+</script>
+</body>
+</html>
